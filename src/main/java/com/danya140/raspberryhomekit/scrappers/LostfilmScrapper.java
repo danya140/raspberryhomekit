@@ -1,12 +1,13 @@
 package com.danya140.raspberryhomekit.scrappers;
 
+import com.danya140.raspberryhomekit.models.SeriesNode;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
-public class LostfilmScrapper extends AbstractScrapper implements IScrapper {
+public class LostfilmScrapper extends AbstractScrapper {
 
     @Override
     public void login(String email, String password) {
@@ -32,7 +33,8 @@ public class LostfilmScrapper extends AbstractScrapper implements IScrapper {
                     .method(Connection.Method.POST)
                     .execute();
 
-            //TODO save cookies
+            //TODO check cookies
+            saveCookies(response.cookies());
 
 
         } catch (IOException e) {
@@ -48,6 +50,7 @@ public class LostfilmScrapper extends AbstractScrapper implements IScrapper {
 
     @Override
     public void scrapp() {
+        List<SeriesNode> seriesConfigs = obtainConfig();
 
     }
 

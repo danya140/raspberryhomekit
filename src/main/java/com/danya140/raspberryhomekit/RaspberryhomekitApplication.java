@@ -1,18 +1,23 @@
 package com.danya140.raspberryhomekit;
 
-import com.danya140.raspberryhomekit.scrappers.LostfilmScrapper;
-import org.springframework.boot.SpringApplication;
+import com.danya140.raspberryhomekit.Utils.XmlHelper;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 public class RaspberryhomekitApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(RaspberryhomekitApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplicationBuilder builder = new SpringApplicationBuilder(RaspberryhomekitApplication.class);
+        builder.headless(false);
+        ConfigurableApplicationContext context = builder.run(args);
 
-        LostfilmScrapper scrapper = new LostfilmScrapper();
-        scrapper.login("daniilhacker@gmail.com","199617304864");
-	}
+        XmlHelper helper = new XmlHelper("data.xml");
+        helper.getAllSeriesFromConfig();
+
+
+    }
 
 }
 
