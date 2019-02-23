@@ -13,12 +13,16 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>raspberryhomekit</name>
 	<description>Demo project for Spring Boot</description>
+	<packaging>jar</packaging>
+
+
 
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -47,9 +51,72 @@
 			<version>1.11.3</version>
 		</dependency>
 
-	</dependencies>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.11</version>
+        </dependency>
+
+
+        <!--Зависимости для торрент клиента-->
+		<dependency>
+			<groupId>com.turn</groupId>
+			<artifactId>ttorrent-cli</artifactId>
+            <scope>system</scope>
+            <version>1.2</version>
+			<systemPath>${basedir}/libs/ttorrent-cli-1.2.jar</systemPath>
+		</dependency>
+        <dependency>
+            <groupId>com.turn</groupId>
+            <artifactId>ttorrent-bencoding</artifactId>
+            <scope>system</scope>
+            <version>1.2</version>
+            <systemPath>${basedir}/libs/ttorrent-bencoding-1.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.turn</groupId>
+            <artifactId>ttorrent-client</artifactId>
+            <scope>system</scope>
+            <version>1.2</version>
+            <systemPath>${basedir}/libs/ttorrent-client-1.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.turn</groupId>
+            <artifactId>ttorrent-common</artifactId>
+            <scope>system</scope>
+            <version>1.2</version>
+            <systemPath>${basedir}/libs/ttorrent-common-1.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.turn</groupId>
+            <artifactId>ttorrent-network</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/libs/ttorrent-network-1.0.jar</systemPath>
+        </dependency>
+        <!--КОНЕЦ Зависимости для торрент клиента-->
+
+
+    </dependencies>
+
+
 
 	<build>
+		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
