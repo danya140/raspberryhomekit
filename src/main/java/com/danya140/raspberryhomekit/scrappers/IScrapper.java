@@ -1,5 +1,8 @@
 package com.danya140.raspberryhomekit.scrappers;
 
+import com.danya140.raspberryhomekit.models.SeriesNode;
+import org.jsoup.nodes.Element;
+
 public interface IScrapper {
 
     /**
@@ -26,12 +29,12 @@ public interface IScrapper {
     /**
      * Получение данных о сериале
      */
-    void fetchData();
+    void fetchData(SeriesNode node);
 
     /**
      * Получение торентов
      */
-    void fetchTorrent();
+    void fetchTorrent(Element element, SeriesNode node, int season);
 
 
 }
