@@ -1,30 +1,40 @@
 package com.danya140.raspberryhomekit.Utils;
 
-import com.turn.ttorrent.client.*;
+import com.danya140.raspberryhomekit.models.Episode;
+import com.turn.ttorrent.client.CommunicationManager;
+import com.turn.ttorrent.client.PeerInformation;
+import com.turn.ttorrent.client.PieceInformation;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.util.Collections;
 import java.util.concurrent.Executors;
 
 public class TorrentHelper {
 
-    public void startDownloadAsync(String torrentFilePath, String downloadPath){
-        SimpleClient client = new SimpleClient();
+    public static final String DOWNLOAD_FOLDER = "downloads";
+
+    public void startDownloadAsync(Episode episode) {
 
         try {
             InetAddress address = InetAddress.getLocalHost();
-            CommunicationManager communicationManager = new CommunicationManager(Executors.newFixedThreadPool(10), Executors.newFixedThreadPool(10));
+            CommunicationManager communicationManager = new CommunicationManager(Executors.newFixedThreadPool(20), Executors.newFixedThreadPool(20));
             communicationManager.start(address);
             com.turn.ttorrent.client.TorrentListener tl = new TorrentListener();
-            communicationManager.addTorrent("D:\\Torrent's\\cleaner.torrent", "D:\\Torrent's", Collections.singletonList(tl));
-            //client.downloadTorrentAsync("D:\\Torrent's\\cleaner.torrent", "D:\\Torrent's", address);
+            File folder = new File(DOWNLOAD_FOLDER + "\\" + episode.getSeriesName());
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+
+            communicationManager.addTorrent(episode.getFileUri(), folder.getPath(), Collections.singletonList(tl));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public class TorrentListener implements com.turn.ttorrent.client.TorrentListener{
+    //TODO сделать очистку торрентов
+    public class TorrentListener implements com.turn.ttorrent.client.TorrentListener {
         @Override
         public void peerConnected(PeerInformation peerInformation) {
 
@@ -47,6 +57,7 @@ public class TorrentHelper {
 
         @Override
         public void pieceReceived(PieceInformation pieceInformation, PeerInformation peerInformation) {
+            System.out.println();
 
         }
 

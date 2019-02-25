@@ -26,6 +26,11 @@ public abstract class AbstractScrapper implements IScrapper {
     private static final String COOKIES_FILE_NAME = "cookies";
 
     /**
+     * Куки
+     */
+    protected Map<String, String> cookies;
+
+    /**
      * Получение конфигов по каждому сериалу
      *
      * @return список с конфигами
@@ -40,6 +45,7 @@ public abstract class AbstractScrapper implements IScrapper {
      * @param cookies куки,которые необходимо сохранить
      */
     protected void saveCookies(Map<String, String> cookies) {
+        this.cookies = cookies;
         Gson gson = new Gson();
         String json = gson.toJson(cookies);
 
@@ -64,6 +70,7 @@ public abstract class AbstractScrapper implements IScrapper {
             String text = scanner.nextLine();
             Gson gson = new Gson();
             Map<String, String> cookies = gson.fromJson(text, HashMap.class);
+            this.cookies = cookies;
             return cookies;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
