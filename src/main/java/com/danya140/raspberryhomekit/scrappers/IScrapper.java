@@ -3,6 +3,9 @@ package com.danya140.raspberryhomekit.scrappers;
 import com.danya140.raspberryhomekit.models.SeriesNode;
 import org.jsoup.nodes.Element;
 
+/**
+ * Интерфейс скраппера
+ */
 public interface IScrapper {
 
     /**

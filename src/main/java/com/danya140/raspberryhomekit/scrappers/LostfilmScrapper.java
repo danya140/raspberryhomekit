@@ -1,7 +1,7 @@
 package com.danya140.raspberryhomekit.scrappers;
 
+import com.danya140.raspberryhomekit.Utils.ConfigHelper;
 import com.danya140.raspberryhomekit.models.Episode;
-import com.danya140.raspberryhomekit.models.RetreLink;
 import com.danya140.raspberryhomekit.models.SeriesNode;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -10,9 +10,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Лостфильм скраппер
@@ -59,6 +57,11 @@ public class LostfilmScrapper extends AbstractScrapper {
 
     @Override
     public void scrapp() {
+        if (isLoginNeeded()) {
+            ConfigHelper configHelper = ConfigHelper.getInstance();
+            login(configHelper.getLogin(), configHelper.getPassword());
+        }
+
         loadCookies();
         for (SeriesNode node : obtainConfig()) {
             fetchData(node);
@@ -94,7 +97,7 @@ public class LostfilmScrapper extends AbstractScrapper {
         for (Element episodeElement : episodeList) {
             String episodeOnclick = episodeElement.child(0).attributes().get("onclick").split("\'")[1];
             String episodeNumber = episodeOnclick.substring(episodeOnclick.length() - 2, episodeOnclick.length());
-            if (Integer.valueOf(episodeNumber) >= node.getCurrentEpisode()) {
+            if (Integer.valueOf(episodeNumber) > node.getCurrentEpisode() || node.getCurrentSeason() < season) {
                 Episode episode = new Episode();
                 episode.setSeriesEpisode(Integer.parseInt(episodeNumber));
                 episode.setSeriesSeason(season);
@@ -122,13 +125,12 @@ public class LostfilmScrapper extends AbstractScrapper {
 
             Document retrePage = Jsoup.connect(retreUrl).cookies(cookies).execute().parse();
 
-            List<RetreLink> links = new ArrayList<>();
+            Map<String,String> links = new HashMap<>();
             for (Element link : retrePage.getElementsByClass("inner-box--item")) {
-                RetreLink retreLink = new RetreLink();
-                retreLink.setQuality(link.child(0).text());
-                retreLink.setLink(link.child(1).child(0).attributes().get("href"));
+                String quality = link.child(0).text();
+                String torrentLink = link.child(1).child(0).attributes().get("href");
 
-                links.add(retreLink);
+                links.put(quality, torrentLink);
             }
             return chooseBest(links);
 
@@ -142,19 +144,17 @@ public class LostfilmScrapper extends AbstractScrapper {
     /**
      * Выбор лучшего качества
      *
-     * @param links список ссылок
+     * @param links мапа качество - ссылка
      * @return ссылка на лучший по качеству
      */
-    private String chooseBest(List<RetreLink> links) {
-        if (links.get(0).getQuality().equals("1080")) {
-            return links.get(0).getLink();
-        } else if (links.get(1).getQuality().equals("1080")) {
-            return links.get(1).getLink();
+    private String chooseBest(Map<String,String> links) {
+        if (links.keySet().contains("1080")){
+            return links.get("1080");
+        } else if (links.keySet().contains("MP4")){
+            return links.get("MP4");
         } else {
-            return links.get(2).getLink();
+            return links.get("SD");
         }
-
-        //TODO сделать выбор если нет 1080
     }
 
     public List<Episode> getEpisodesForDownload() {

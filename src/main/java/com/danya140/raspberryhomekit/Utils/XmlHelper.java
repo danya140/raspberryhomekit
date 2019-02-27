@@ -1,16 +1,26 @@
 package com.danya140.raspberryhomekit.Utils;
 
+import com.danya140.raspberryhomekit.models.Episode;
 import com.danya140.raspberryhomekit.models.SeriesNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Помощник по работе с конфигурационным файлом сериалов
+ */
 public class XmlHelper {
 
     /**
@@ -91,5 +101,44 @@ public class XmlHelper {
             result.add(seriesNode);
         }
         return result;
+    }
+
+    /**
+     * Обновление конфигурационного файла данными о просмотренном эпизоде
+     *
+     * @param episode эпизод который был скачан
+     */
+    public void updateXml(Episode episode) {
+        read();
+
+        try {
+
+            NodeList list = document.getElementsByTagName(NodeNames.SERIES_NODE_NAME);
+            for (int i = 0; i < list.getLength(); i++) {
+                Element element = (Element) list.item(i);
+
+                Node seasonElement = element.getElementsByTagName(NodeNames.SERIES_SEASON_NAME).item(0);
+                Node episodeElement = element.getElementsByTagName(NodeNames.SERIES_EPISODE_NAME).item(0);
+
+                if (Integer.valueOf(seasonElement.getTextContent()) < episode.getSeriesSeason()) {
+                    seasonElement.setTextContent(episode.getSeriesSeason() + "");
+                }
+
+                if (Integer.valueOf(episodeElement.getTextContent()) < episode.getSeriesEpisode()) {
+                    episodeElement.setTextContent(episode.getSeriesEpisode() + "");
+                }
+            }
+
+            //Сохранение
+            document.getDocumentElement().normalize();
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(document);
+            StreamResult result = new StreamResult(new File(configFile));
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.transform(source, result);
+        } catch (Exception e) {
+            //TODO
+        }
     }
 }

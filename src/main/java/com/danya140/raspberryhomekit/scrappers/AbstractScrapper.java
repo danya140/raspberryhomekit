@@ -3,6 +3,7 @@ package com.danya140.raspberryhomekit.scrappers;
 import com.danya140.raspberryhomekit.Utils.XmlHelper;
 import com.danya140.raspberryhomekit.models.SeriesNode;
 import com.google.gson.Gson;
+import org.jsoup.helper.StringUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,12 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Абстрактная реализация скраппера
+ */
 public abstract class AbstractScrapper implements IScrapper {
 
     /**
      * Название файла с конфигом
      */
-    private static final String CONFIG_FILE_NAME = "data.xml";
+    public static final String CONFIG_FILE_NAME = "data.xml";
 
     /**
      * Название файла с куками
@@ -77,5 +81,24 @@ public abstract class AbstractScrapper implements IScrapper {
         }
 
         return null;
+    }
+
+    protected boolean isLoginNeeded() {
+        File cookie = new File(COOKIES_FILE_NAME);
+        if (cookie.exists()) {
+            try {
+                Scanner scanner = new Scanner(cookie);
+                String text = scanner.nextLine();
+                if (!StringUtil.isBlank(text)){
+                    if (text.contains("lf_session")){
+                        return false;
+                    }
+                }
+
+            } catch (FileNotFoundException e) {
+                //TODO
+            }
+        }
+        return true;
     }
 }

@@ -9,6 +9,9 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.text.MessageFormat;
 
+/**
+ * Загрузчик файлов
+ */
 public class DownloadManager {
 
     public static final String TEMP_FOLDER = "tmp";
