@@ -1,6 +1,13 @@
 package com.danya140.raspberryhomekit.models;
 
+/**
+ * Сущность из конфига
+ */
 public class SeriesNode {
+
+    /**
+     * Название сериала TODO подумать над парсом с сайта, а не ручной записи в конфиг
+     */
     private String name;
 
     /**

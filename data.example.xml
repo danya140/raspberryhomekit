@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<data>
+    <series name="The Expanse"><!--Обязательно наличие названия-->
+        <link>http://www.lostfilm.tv/series/The_Expanse</link><!--Ссылка на лостфильм на страницу сериала-->
+        <current_season>3</current_season><!--Последний сезон, который смотрел-->
+        <current_episode>10</current_episode><!--Последняя просмотренная серия. Следующая будет скачана-->
+    </series>
+</data>

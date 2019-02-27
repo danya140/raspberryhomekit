@@ -1,5 +1,8 @@
 package com.danya140.raspberryhomekit.models;
 
+/**
+ * Сущность эпизода
+ */
 public class Episode {
 
     /**

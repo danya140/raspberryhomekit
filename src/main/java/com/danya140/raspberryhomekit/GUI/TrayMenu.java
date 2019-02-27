@@ -1,37 +1,74 @@
 package com.danya140.raspberryhomekit.GUI;
 
+import com.danya140.raspberryhomekit.models.Episode;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+/**
+ * Процесс в трее
+ */
 public class TrayMenu {
 
-    public void displayTray() throws AWTException{
+    private static TrayMenu instance;
+
+    private TrayIcon trayIcon;
+
+    private TrayMenu() {
         SystemTray tray = SystemTray.getSystemTray();
 
-        //If the icon is a file
-        Image image = Toolkit.getDefaultToolkit().createImage("icon.png");
-        //Alternative (if the icon is on the classpath):
-        //Image image = Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
-
-        TrayIcon trayIcon = new TrayIcon(image, "Tray Demo");
-        //Let the system resize the image if needed
+        Image image = Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("icon.jpg"));
+        trayIcon = new TrayIcon(image, "Lostfilm Demo");
         trayIcon.setImageAutoSize(true);
-        //Set tooltip text for the tray icon
-        trayIcon.setToolTip("System tray icon demo");
-        tray.add(trayIcon);
+
+        try {
+            tray.add(trayIcon);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
 
         PopupMenu popupMenu = new PopupMenu();
-        MenuItem item = new MenuItem("Exit");
-        item.addActionListener(new AbstractAction() {
+        MenuItem exitMenuItem = new MenuItem("Закрыть");
+        exitMenuItem.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         });
-        popupMenu.add(item);
+        MenuItem stopMenuItem = new MenuItem("Остановить закачки");
+        stopMenuItem.addActionListener(new StopMenuListener());
 
+        popupMenu.add(stopMenuItem);
+
+
+        popupMenu.add(exitMenuItem);
         trayIcon.setPopupMenu(popupMenu);
+    }
 
+    public static TrayMenu getInstance() {
+        if (instance == null) {
+            instance = new TrayMenu();
+        }
+        return instance;
+    }
+
+    /**
+     * Показать уведомление о завершении скачивания эпизода
+     *
+     * @param episode эпизод, который был скачан
+     */
+    public void showDownloadCompleteNotification(Episode episode) {
+        trayIcon.displayMessage("Загрузка завершена", "Загрузка " + episode.getSeriesName() + " сезон " + episode.getSeriesSeason() + " серия " + episode.getSeriesEpisode() + " завершена", TrayIcon.MessageType.INFO);
+    }
+
+    /**
+     * Показать уведомление
+     *
+     * @param caption Заголовок
+     * @param text    Текст сообщения
+     */
+    public void showNotification(String caption, String text) {
+        trayIcon.displayMessage(caption, text, TrayIcon.MessageType.INFO);
     }
 }
